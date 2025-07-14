@@ -31,7 +31,7 @@ def main():
 
     msg = Sign1Message(phdr={KID: b"01"}, payload=payload)
     msg.key = cose_key
-    msg.alg = Es256
+    msg.alg = Es256()
 
     # ✅ DIAGNOSTIC
     print("key:", type(msg.key))
