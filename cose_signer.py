@@ -3,7 +3,6 @@ from pycose.messages.sign1message import Sign1Message
 from pycose.keys.ec2 import EC2Key
 from pycose.algorithms import Es256
 from pycose.headers import KID
-
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.backends import default_backend
 
@@ -33,9 +32,14 @@ def main():
 
     msg = Sign1Message(phdr={KID: b"01"}, payload=payload)
     msg.key = cose_key
-    msg.alg = Es256()  # ✅ INSTANTIATE the algorithm
+    msg.alg = Es256()  # critical: instantiate algorithm
+
+    print(f"msg.key: {msg.key}")
+    print(f"msg.alg: {msg.alg}")
+    print(f"alg type: {type(msg.alg)}")
 
     encoded = msg.encode()
+
     with open(output_file, "wb") as f:
         f.write(encoded)
 
