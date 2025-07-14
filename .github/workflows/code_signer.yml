@@ -19,21 +19,23 @@ jobs:
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
-          python-version: 3.11
+          python-version: '3.11'
 
       - name: Install pycose from GitHub master + cryptography
         run: |
-          pip install --no-cache-dir git+https://github.com/TimothyClaeys/pycose.git@master cryptography
+          pip uninstall -y pycose
+          pip install --no-cache-dir git+https://github.com/TimothyClaeys/pycose.git@master
+          pip install cryptography
 
       - name: Write private key from secret
         run: |
           echo "${{ secrets.COSE_SIGN_KEY }}" | base64 -d > private_key.pk8
 
-      - name: Sign file
+      - name: Sign file using cose_signer.py
         run: |
           python cose_signer.py "${{ github.event.inputs.file_to_sign }}" \
-                               "${{ github.event.inputs.file_to_sign }}.cose" \
-                               private_key.pk8
+                 "${{ github.event.inputs.file_to_sign }}.cose" \
+                 private_key.pk8
 
       - name: Upload signed artifact
         uses: actions/upload-artifact@v4
