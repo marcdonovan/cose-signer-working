@@ -27,7 +27,11 @@ def main():
 
     cose_key = EC2Key._from_cryptography_key(private_key)
 
-    msg = Sign1Message(phdr={KID: b"01"}, payload=payload, key=cose_key)
+    msg = Sign1Message(
+        phdr={KID: b"01", 1: Es256},  # 1 = 'alg'
+        payload=payload,
+        key=cose_key
+    )
 
     with open(output_file, "wb") as f:
         f.write(msg.encode())
