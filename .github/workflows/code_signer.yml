@@ -16,15 +16,15 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.11
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install pycose from GitHub master + cryptography
+      - name: Install dependencies (latest pycose from GitHub)
         run: |
-          pip uninstall -y pycose
-          pip install --no-cache-dir git+https://github.com/TimothyClaeys/pycose.git@master
+          pip install --upgrade pip
+          pip install git+https://github.com/TimothyClaeys/pycose.git@main
           pip install cryptography
 
       - name: Write private key from secret
