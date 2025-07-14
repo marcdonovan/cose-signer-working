@@ -1,0 +1,42 @@
+name: Sign Artifact with COSE (Python)
+
+on:
+  workflow_dispatch:
+    inputs:
+      file_to_sign:
+        description: 'Relative path to the file to sign'
+        required: true
+        type: string
+
+jobs:
+  sign:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install pycose==0.10.4 cryptography
+
+      - name: Write private key from secret
+        run: |
+          echo "${{ secrets.COSE_SIGN_KEY }}" | base64 -d > private_key.pk8
+
+      - name: Sign file
+        run: |
+          python cose_signer.py "${{ github.event.inputs.file_to_sign }}" \
+                 "${{ github.event.inputs.file_to_sign }}.cose" \
+                 private_key.pk8
+
+      - name: Upload signed artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: signed-cose-file
+          path: ${{ github.event.inputs.file_to_sign }}.cose
