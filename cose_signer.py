@@ -31,7 +31,9 @@ def main():
 
     cose_key = EC2Key(crv="P_256", x=x, y=y, d=d)
 
-    msg = Sign1Message(phdr={KID: b"01"}, payload=payload, key=cose_key, alg=Es256)
+    msg = Sign1Message(phdr={KID: b"01"}, payload=payload)
+    msg.key = cose_key
+    msg.alg = Es256  # ✅ Manually set algorithm AFTER instantiation
 
     with open(output_file, "wb") as f:
         f.write(msg.encode())
