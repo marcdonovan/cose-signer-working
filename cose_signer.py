@@ -1,14 +1,15 @@
 import sys
-from pycose.messages import Sign1Message
+from pycose.messages.sign1message import Sign1Message
 from pycose.keys.ec2 import EC2Key
 from pycose.algorithms import Es256
 from pycose.headers import KID
 
 from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.backends import default_backend
 
 def load_private_key(pkcs8_path):
     with open(pkcs8_path, "rb") as f:
-        return serialization.load_der_private_key(f.read(), password=None)
+        return serialization.load_der_private_key(f.read(), password=None, backend=default_backend())
 
 def main():
     if len(sys.argv) != 4:
@@ -22,16 +23,14 @@ def main():
 
     private_key = load_private_key(private_key_file)
 
-    # Create COSE EC2 key from cryptography private key
-    cose_key = EC2Key._from_cryptography_key(private_key, optional_params={KID: b"01"})
+    # Create COSE key from cryptography private key, no optional_params here
+    cose_key = EC2Key._from_cryptography_key(private_key)
 
-    msg = Sign1Message(phdr={KID: b"01"}, payload=payload, alg=Es256)
-    msg.key = cose_key
-
-    encoded = msg.encode()
+    # Create the message with KID set in protected headers, and key & alg specified
+    msg = Sign1Message(phdr={KID: b"01"}, payload=payload, key=cose_key, alg=Es256)
 
     with open(output_file, "wb") as f:
-        f.write(encoded)
+        f.write(msg.encode())
 
     print(f"✅ Signed {input_file} → {output_file}")
 
