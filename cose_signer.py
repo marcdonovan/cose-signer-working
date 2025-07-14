@@ -29,7 +29,7 @@ def main():
     y = public_numbers.y.to_bytes(32, 'big')
     d = numbers.private_value.to_bytes(32, 'big')
 
-    cose_key = EC2Key(crv="P_256", x=x, y=y, d=d)  # note the underscore
+    cose_key = EC2Key(crv="P_256", x=x, y=y, d=d)
 
     msg = Sign1Message(phdr={KID: b"01"}, payload=payload, key=cose_key, alg=Es256)
 
