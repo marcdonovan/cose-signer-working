@@ -24,7 +24,7 @@ jobs:
       - name: Install dependencies (latest pycose from GitHub)
         run: |
           pip install --upgrade pip
-          pip install git+https://github.com/TimothyClaeys/pycose.git@main
+          pip install git+https://github.com/TimothyClaeys/pycose.git@master
           pip install cryptography
 
       - name: Write private key from secret
