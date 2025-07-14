@@ -1,8 +1,8 @@
 import sys
-from pycose.messages import Sign1Message
+from pycose.messages.sign1message import Sign1Message
 from pycose.keys.ec2 import EC2Key
+from pycose.algorithms import Es256
 from pycose.headers import KID
-from pycose.algorithms.cose_algorithms import Es256
 
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.backends import default_backend
@@ -29,7 +29,7 @@ def main():
     y = public_numbers.y.to_bytes(32, 'big')
     d = numbers.private_value.to_bytes(32, 'big')
 
-    cose_key = EC2Key(crv="P-256", x=x, y=y, d=d)
+    cose_key = EC2Key(crv="P_256", x=x, y=y, d=d)  # Note: crv uses underscore now
 
     msg = Sign1Message(phdr={KID: b"01"}, payload=payload)
     msg.key = cose_key
