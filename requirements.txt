@@ -1,0 +1,2 @@
+pycose==0.10.4
+cryptography
