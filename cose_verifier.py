@@ -2,6 +2,7 @@ import sys
 from pycose.messages import CoseMessage
 from pycose.keys.ec2 import EC2Key
 from cryptography.hazmat.primitives import serialization
+from pycose.keys.curves import P256
 
 def load_public_key(pem_path):
     with open(pem_path, "rb") as f:
@@ -29,7 +30,7 @@ def main():
     x = public_numbers.x.to_bytes(32, byteorder="big")
     y = public_numbers.y.to_bytes(32, byteorder="big")
 
-    cose_key = EC2Key(crv="P_256", x=x, y=y)
+    cose_key = EC2Key(crv=P256, x=x, y=y)
 
     # Assign key and verify
     msg.key = cose_key
