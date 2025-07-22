@@ -24,10 +24,10 @@ def main():
         print("❌ Not a COSE_Sign1 message.")
         sys.exit(1)
 
-    print(f"Decoded message class: {msg.__class__.__name__}")
-    print(f"Protected headers: {msg.phdr}")
-    print(f"Unprotected headers: {msg.uhdr}")
-    print(f"Payload (raw): {msg.payload}")
+    # print(f"Decoded message class: {msg.__class__.__name__}")
+    # print(f"Protected headers: {msg.phdr}")
+    # print(f"Unprotected headers: {msg.uhdr}")
+    # print(f"Payload (raw): {msg.payload}")
 
     # Load public key and convert to COSE key
     public_key = load_public_key(public_key_file)
@@ -36,7 +36,7 @@ def main():
     y = public_numbers.y.to_bytes(32, byteorder="big")
     cose_key = EC2Key(crv=P256, x=x, y=y)
 
-# Assign key and verify
+    # Assign key and verify
     msg.key = cose_key
     try:
         if msg.verify_signature():
