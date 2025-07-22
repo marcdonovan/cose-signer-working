@@ -27,17 +27,24 @@ jobs:
           pip install git+https://github.com/TimothyClaeys/pycose.git@master
           pip install cryptography
 
-      - name: Write private key from secret
+      - name: Write private key from secret (PEM format)
         run: |
-          echo "${{ secrets.COSE_SIGN_KEY }}" | base64 -d > private_key.pk8
+          echo "${{ secrets.COSE_SIGN_KEY }}" > private_key.pem
+
+      - name: Extract public key from private key
+        run: |
+          openssl ec -in private_key.pem -pubout -out public_key.pem
 
       - name: Sign file using cose_signer.py
         run: |
           python cose_signer.py "${{ github.event.inputs.file_to_sign }}" \
-                 "${{ github.event.inputs.file_to_sign }}.cose" 
+                 "${{ github.event.inputs.file_to_sign }}.cose" \
+                 private_key.pem
 
-      - name: Upload signed artifact
+      - name: Upload signed artifact and public key
         uses: actions/upload-artifact@v4
         with:
           name: signed-cose-file
-          path: ${{ github.event.inputs.file_to_sign }}.cose
+          path: |
+            ${{ github.event.inputs.file_to_sign }}.cose
+            public_key.pem
